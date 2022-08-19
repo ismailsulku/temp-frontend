@@ -1,4 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { Product } from 'src/app/models/product';
+import {HttpClient} from '@angular/common/http';
+import { ProductResponseModel } from 'src/app/models/productResponseModel';
+import { ProductService } from 'src/app/services/product.service';
+
+//apideki datayı karşılamak için model oluşturulduktan sonra bu kısımda datayı karşılarız..
 
 @Component({
   selector: 'app-product',
@@ -7,30 +13,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProductComponent implements OnInit {
 
-  product1:any={productId:1, 
-    productName:'Bardak', 
-    categoryId:1, 
-    unitPrice:5}
+  products:Product[]=[];//amaç ürünleri getirmek buradaki datayı doldurmak.
+  dataLoaded = false;
 
-  product2:any={productId:2, 
-     productName:'Laptop', 
-     categoryId:1, 
-     unitPrice:5}
+  constructor(private productService:ProductService) { } // constructor'ın amacı ilgili componenti bellekte oluşturmaktır. Contructorda datayı initialize etmek dışında başka bir işlem yapılmaması gerekir.
+  //sadece bu classta geçerli  (başlangıç datası newlenebilir..)
 
-  product3:any={productId:3, 
-      productName:'Mouse', 
-      categoryId:1, 
-      unitPrice:5}  
-
-  product4:any={productId:4, 
-     productName:'Camera', 
-     categoryId:1, 
-     unitPrice:5}   
-
-products=[this.product1,this.product2,this.product3,this.product4]
-  constructor() { }
-
+  //ngOnInit component ilk açıldığında çalışan koddur.
   ngOnInit(): void {
+    this.getProducts();
+  }
+
+  //apiye bağlanmak için operasyonlar yazılır.
+  getProducts(){
+    this.productService.getProducts().subscribe(response=>{
+      this.products = response.data
+      this.dataLoaded = true;
+    })
+    console.log();                             
   }
 
 }

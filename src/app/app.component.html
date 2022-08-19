@@ -2,7 +2,22 @@
 <!-- <ul>
   <li *ngFor="let product of products">{{product.productName}}</li>
 </ul> -->
-<app-navi></app-navi>
-<app-category></app-category>
-<app-product></app-product>
-<router-outlet></router-outlet>
+
+<div class = 'container'>
+
+  <app-navi></app-navi>
+
+  <div class="row"> 
+    <div class="col-md-3">
+      <app-category></app-category>
+    </div>
+
+    <div class="col-md-9">
+      <app-todo></app-todo>
+    </div>
+  </div>
+
+  <router-outlet></router-outlet>
+
+</div>
+
