@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Product } from 'src/app/models/product';
 import {HttpClient} from '@angular/common/http';
-import { ProductResponseModel } from 'src/app/models/productResponseModel';
 import { ProductService } from 'src/app/services/product.service';
+import { ActivatedRoute } from '@angular/router';
 
 //apideki datayı karşılamak için model oluşturulduktan sonra bu kısımda datayı karşılarız..
 
@@ -16,12 +16,20 @@ export class ProductComponent implements OnInit {
   products:Product[]=[];//amaç ürünleri getirmek buradaki datayı doldurmak.
   dataLoaded = false;
 
-  constructor(private productService:ProductService) { } // constructor'ın amacı ilgili componenti bellekte oluşturmaktır. Contructorda datayı initialize etmek dışında başka bir işlem yapılmaması gerekir.
+  constructor(private productService:ProductService , private activatedRoute:ActivatedRoute) { } // constructor'ın amacı ilgili componenti bellekte oluşturmaktır. Contructorda datayı initialize etmek dışında başka bir işlem yapılmaması gerekir.
   //sadece bu classta geçerli  (başlangıç datası newlenebilir..)
 
   //ngOnInit component ilk açıldığında çalışan koddur.
   ngOnInit(): void {
-    this.getProducts();
+
+    this.activatedRoute.params.subscribe(params=>{
+      if(params["categoryId"]){
+        this.getProductsByCategory(params["categoryId"])
+      }else{
+        this.getProducts()
+      }
+    })
+
   }
 
   //apiye bağlanmak için operasyonlar yazılır.
@@ -29,8 +37,14 @@ export class ProductComponent implements OnInit {
     this.productService.getProducts().subscribe(response=>{
       this.products = response.data
       this.dataLoaded = true;
-    })
-    console.log();                             
+    })                          
+  }
+
+  getProductsByCategory(categoryId:number){
+    this.productService.getProductsByCategory(categoryId).subscribe(response=>{
+      this.products = response.data
+      this.dataLoaded = true;
+    })                          
   }
 
 }
