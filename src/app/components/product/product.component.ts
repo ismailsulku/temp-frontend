@@ -3,6 +3,8 @@ import { Product } from 'src/app/models/product';
 import {HttpClient} from '@angular/common/http';
 import { ProductService } from 'src/app/services/product.service';
 import { ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { CartService } from 'src/app/services/cart.service';
 
 //apideki datayı karşılamak için model oluşturulduktan sonra bu kısımda datayı karşılarız..
 
@@ -15,9 +17,15 @@ export class ProductComponent implements OnInit {
 
   products:Product[]=[];//amaç ürünleri getirmek buradaki datayı doldurmak.
   dataLoaded = false;
+  filterText=""; //html de [(ngModel)] yazarak burayla bağlıyoruz. Daha sonra appmodule da FormsModule import ediyoruz.
 
-  constructor(private productService:ProductService , private activatedRoute:ActivatedRoute) { } // constructor'ın amacı ilgili componenti bellekte oluşturmaktır. Contructorda datayı initialize etmek dışında başka bir işlem yapılmaması gerekir.
-  //sadece bu classta geçerli  (başlangıç datası newlenebilir..)
+  constructor(
+    private productService:ProductService , 
+    private activatedRoute:ActivatedRoute, 
+    private toastrService:ToastrService, 
+    private cartService:CartService
+    ) { } // constructor'ın amacı ilgili componenti bellekte oluşturmaktır. Contructorda datayı initialize etmek dışında başka bir işlem yapılmaması gerekir.
+   //sadece bu classta geçerli  (başlangıç datası newlenebilir..)
 
   //ngOnInit component ilk açıldığında çalışan koddur.
   ngOnInit(): void {
@@ -45,6 +53,11 @@ export class ProductComponent implements OnInit {
       this.products = response.data
       this.dataLoaded = true;
     })                          
+  }
+
+  addToCart(product:Product){
+    this.toastrService.success("Sepete eklendi", product.productName)
+    this.cartService.addToCart(product);
   }
 
 }
